@@ -1,2 +1,0 @@
-# flapper
-MEAN Tutorial
