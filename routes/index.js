@@ -47,6 +47,33 @@ router.put('/posts/:post/upvote', function(req, res, next) {
 	});
 });
 
+
+/* POST /posts/:id/comments - add a new comment to a post by ID */
+router.post('/posts/:post/comments', function(req, res, next) {
+	var comment = new Comment(req.body);
+	comment.post = req.post;
+
+	comment.save(function(err, comment){
+		if(err){ return next(err); }
+
+		req.post.comments.push(comment);
+		req.post.save(function(err, post) {
+			if(err){ return next(err); }
+
+			res.json(comment);
+		});
+	});
+});
+
+/* PUT /posts/:id/comments/:id/upvote - upvote a comment */
+router.put('/posts/:post/comments/:comment/upvote', function(req, res, next) {
+	req.post.upvote(function(err, post){
+		if (err) { return next(err); }
+
+		res.json(post);
+	});
+});
+
 // Create the :post variable to be used in routes
 router.param('post', function(req, res, next, id) {
 	var query = Post.findById(id);
@@ -61,4 +88,20 @@ router.param('post', function(req, res, next, id) {
 		return next();
 	});
 });
+
+// Create the :comment variable to be used in routes
+router.param('comment', function(req, res, next, id) {
+	var query = Comment.findById(id);
+
+	query.exec(function (err, comment){
+		if (err) { return next(err); }
+		if (!comment) { return next(new Error("can't find comment")); }
+
+		// Attach comment to the request object
+		req.comment = comment;
+		// move on with the route
+		return next();
+	});
+});
+
 module.exports = router;
