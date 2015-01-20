@@ -67,7 +67,7 @@ router.post('/posts/:post/comments', function(req, res, next) {
 
 /* PUT /posts/:id/comments/:id/upvote - upvote a comment */
 router.put('/posts/:post/comments/:comment/upvote', function(req, res, next) {
-	req.post.upvote(function(err, post){
+	req.comment.upvote(function(err, post){
 		if (err) { return next(err); }
 
 		res.json(post);
