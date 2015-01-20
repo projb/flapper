@@ -34,7 +34,9 @@ router.post('/posts', function(req, res, next) {
 
 /* GET /posts/:id - return an individual post with associated comments */
 router.get('/posts/:post', function(req, res) {
-	res.json(req.post);
+	req.post.populate('comments', function(err, post) {
+		res.json(post);
+	});
 });
 
 
